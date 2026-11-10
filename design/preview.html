@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stackademic design preview</title>
+<style>
+:root{
+  --ink:#17202E;--slate:#4A5568;--mark:#FFD84D;--paper:#EEF1F4;--surface:#FFFFFF;--outline:#6B7789;
+  --hearts:#B42318;--diamonds:#1F4FB8;--clubs:#1E6B3A;--focus:#1F4FB8;
+  --ok:#146C43;--ok-bg:#E3F1E8;--err:#B42318;--err-bg:#FBE6E3;--mark-bg:#FFF3B8;
+  --font:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--font);font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+h1,h2,h3{margin:0;line-height:1.2}
+h1{font-size:32px;letter-spacing:-.01em}
+h2{font-size:24px}
+h3{font-size:19px;line-height:1.3}
+p{margin:0;max-width:68ch}
+.muted{color:var(--slate)}
+.small{font-size:13px;line-height:1.3}
+section.doc{padding:40px 0;border-top:1px solid var(--outline)}
+section.doc>h2{margin-bottom:24px}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.stack>*+*{margin-top:16px}
+
+/* header */
+.top{background:var(--surface);border-bottom:1px solid var(--outline)}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px;color:var(--ink);text-decoration:none}
+.brand svg{width:28px;height:28px}
+.nav{display:flex;gap:16px;flex-wrap:wrap}
+.nav a{color:var(--ink);text-decoration:none;font-weight:700;font-size:15px;padding:10px 0;border-bottom:3px solid transparent}
+.nav a[aria-current]{border-bottom-color:var(--ink)}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:15px}
+.who b,.badge{white-space:nowrap}
+.badge{display:inline-block;background:var(--mark-bg);color:var(--ink);border:1px solid var(--outline);border-radius:9999px;padding:2px 10px;font-size:13px;line-height:1.3}
+.adminbar{background:var(--ink);color:#fff;font-weight:700;font-size:15px;padding:8px 16px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:3px;font:700 15px/1.2 var(--font);border:1px solid var(--ink);cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary.is-hover{background:#2C3A52}
+.btn-secondary{background:var(--surface);color:var(--ink);border-color:var(--outline)}
+.btn-secondary.is-hover{border-color:var(--ink)}
+.btn-danger{background:var(--err);color:#fff;border-color:var(--err)}
+.btn[disabled]{background:var(--paper);color:var(--slate);border-color:var(--outline);cursor:not-allowed}
+.is-focus{outline:3px solid var(--focus);outline-offset:2px}
+.btn-link{background:none;border:0;color:var(--ink);text-decoration:underline;padding:0 4px}
+
+/* cards */
+.card{width:52px;height:72px;background:var(--surface);border:1px solid var(--outline);border-radius:6px;box-shadow:0 1px 0 var(--outline);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:28px;line-height:1;color:var(--ink);flex:none}
+.card svg{width:18px;height:18px;fill:currentColor}
+.card.h{color:var(--hearts)}.card.d{color:var(--diamonds)}.card.c{color:var(--clubs)}
+.card.back{background:var(--ink) repeating-linear-gradient(45deg,transparent 0 5px,#2C3A52 5px 7px);border-color:var(--ink)}
+.card.slot{background:transparent;border:1.5px dashed var(--outline);box-shadow:none}
+.cards{display:flex;gap:8px;flex-wrap:wrap}
+
+/* seat strip */
+.seats{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.seat{background:var(--surface);border:1px solid var(--outline);padding:8px;font-size:13px;line-height:1.3;min-width:0}
+.seat b{display:block;font-size:15px}
+.seat .name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seat.you{background:var(--mark);border-color:var(--ink)}
+.seat.acting{outline:2px solid var(--ink);outline-offset:-2px}
+.seat.folded{color:var(--slate)}
+
+/* hand view */
+.hand{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--outline);padding:24px}
+.problem{font-size:18px;line-height:1.55}
+.facts{display:flex;gap:24px;flex-wrap:wrap;font-size:15px}
+.facts b{display:block;font-size:24px}
+.actions{margin:0;padding:0;list-style:none;font-size:15px}
+.actions li{display:grid;grid-template-columns:64px 1fr;gap:8px;padding:4px 0;border-top:1px solid #D5DBE3}
+.actions .street{font-weight:700}
+
+/* move choices */
+fieldset{border:0;margin:0;padding:0}
+legend{font-weight:700;font-size:19px;margin-bottom:8px;padding:0}
+.moves{display:grid;gap:8px}
+.move{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 16px;background:var(--surface);border:1px solid var(--outline);border-radius:3px;font-weight:700;font-size:15px;cursor:pointer}
+.move input{width:20px;height:20px;margin:0;accent-color:var(--ink)}
+.move:hover,.move.is-hover{border-color:var(--ink)}
+.move:has(input:checked),.move.is-selected{background:var(--mark);border-color:var(--ink)}
+.move:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
+.move.is-disabled{color:var(--slate);background:var(--paper);cursor:not-allowed}
+.move.is-locked{background:var(--mark);border-color:var(--ink);cursor:default}
+
+/* feedback */
+.fb{padding:16px;border-left:4px solid}
+.fb.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.fb.bad{background:var(--err-bg);color:var(--err);border-color:var(--err)}
+.fb strong{display:flex;align-items:center;gap:8px;font-size:19px}
+.fb svg{width:20px;height:20px;fill:currentColor;flex:none}
+.fb p{color:var(--ink);margin-top:4px}
+.prob{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.prob .big{font-size:40px;font-weight:800;line-height:1}
+.locked{border:1px dashed var(--outline);padding:16px;color:var(--slate);font-size:15px}
+
+/* inputs */
+label.lbl{display:block;font-weight:700;font-size:15px;margin-bottom:4px}
+.input{width:100%;max-width:320px;min-height:44px;padding:0 12px;border:1px solid var(--outline);border-radius:3px;background:var(--surface);color:var(--ink);font:400 16px var(--font)}
+.input.is-error{border:2px solid var(--err)}
+.help{font-size:13px;color:var(--slate);margin-top:4px}
+.errtext{font-size:13px;color:var(--err);margin-top:4px;display:flex;gap:4px;align-items:center;font-weight:700}
+.errtext svg{width:14px;height:14px;fill:currentColor}
+.field{min-width:240px;flex:1}
+
+/* chat */
+.chat{display:flex;flex-direction:column;gap:8px;max-width:560px}
+.msg{background:var(--surface);border:1px solid var(--outline);border-radius:6px;padding:8px 12px;max-width:85%;overflow-wrap:anywhere}
+.msg.mine{align-self:flex-end;border-left:4px solid var(--mark);border-color:var(--outline) var(--outline) var(--outline) #E0B800}
+.msg .meta{font-size:13px;color:var(--slate)}
+.sys{align-self:center;font-size:13px;color:var(--slate);text-align:center}
+
+/* dialog */
+.dialog{background:var(--surface);border:1px solid var(--ink);max-width:480px;padding:24px}
+.dialog ul{margin:8px 0 16px;padding-left:20px}
+.scrim{background:rgba(23,32,46,.6);padding:24px}
+
+/* swatches */
+.sw{width:150px;font-size:13px}
+.sw i{display:block;height:56px;border:1px solid var(--outline);margin-bottom:4px}
+.typerow{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:baseline;padding:8px 0;border-top:1px solid #D5DBE3}
+
+@media (max-width:760px){
+  .hand{grid-template-columns:1fr}
+  .seats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .panel{padding:16px}
+  .nav{order:3;width:100%;gap:12px}
+  .who{margin-left:0}
+  .hand>*{min-width:0}
+  .typerow{grid-template-columns:1fr;gap:0}
+  h1{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="s" viewBox="0 0 20 20"><path d="M10 1 C10 1 2 8 2 12 a4 4 0 0 0 7 2.5 L8 19 h4 l-1-4.5 A4 4 0 0 0 18 12 C18 8 10 1 10 1z"/></symbol>
+  <symbol id="h" viewBox="0 0 20 20"><path d="M10 18 L2.5 10 A4.4 4.4 0 0 1 10 4.5 A4.4 4.4 0 0 1 17.5 10z"/></symbol>
+  <symbol id="d" viewBox="0 0 20 20"><path d="M10 1 L17 10 L10 19 L3 10z"/></symbol>
+  <symbol id="c" viewBox="0 0 20 20"><circle cx="10" cy="5.5" r="4"/><circle cx="5" cy="11" r="4"/><circle cx="15" cy="11" r="4"/><path d="M8.5 11 h3 l1 8 h-5z"/></symbol>
+  <symbol id="ok" viewBox="0 0 20 20"><path d="M10 1a9 9 0 1 0 0 18a9 9 0 0 0 0-18zm-1.2 13.2L4.6 10l1.6-1.6l2.6 2.6l5-5l1.6 1.6z"/></symbol>
+  <symbol id="x" viewBox="0 0 20 20"><path d="M10 1a9 9 0 1 0 0 18a9 9 0 0 0 0-18zm3.9 11.5l-1.4 1.4L10 11.4l-2.5 2.5l-1.4-1.4L8.6 10L6.1 7.5l1.4-1.4L10 8.6l2.5-2.5l1.4 1.4L11.4 10z"/></symbol>
+  <symbol id="logo" viewBox="0 0 64 64"><rect x="8" y="44" width="48" height="12" rx="3" fill="#17202E"/><rect x="8" y="30" width="48" height="12" rx="3" fill="#17202E"/><rect x="20" y="47" width="6" height="6" fill="#FFD84D"/><rect x="38" y="33" width="6" height="6" fill="#FFD84D"/><path d="M32 6 L56 18 L32 30 L8 18 Z" fill="#1F4FB8"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><svg aria-hidden="true"><use href="#logo"/></svg>stackademic</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page">Quizzes</a><a href="#">Practice</a><a href="#">Bluffing</a><a href="#">Tutor</a>
+    </nav>
+    <div class="who"><span>Signed in as <b>Marisol K.</b></span><span class="badge">Smart student</span><a class="btn btn-secondary" href="#">Sign out</a></div>
+  </div>
+</header>
+
+<main>
+<!-- Main screen: hand quiz, answered -->
+<div class="wrap" style="padding-top:24px;padding-bottom:40px">
+  <p class="muted small" style="margin-bottom:8px">Quiz 14 of 20 · 8-player cash game</p>
+  <h1 style="margin-bottom:24px">You're on the button. The turn checks to you.</h1>
+  <div class="hand">
+    <div class="stack">
+      <div class="panel stack">
+        <p class="problem">Blinds 1/2. UTG raised preflop and you called on the button. One opponent checks the turn on a board with two diamonds. What's your move?</p>
+        <div class="row" style="gap:24px">
+          <div><p class="small muted" style="margin-bottom:4px">Your cards</p>
+            <div class="cards">
+              <div class="card d" role="img" aria-label="Ace of diamonds">A<svg><use href="#d"/></svg></div>
+              <div class="card d" role="img" aria-label="Queen of diamonds">Q<svg><use href="#d"/></svg></div>
+            </div></div>
+          <div><p class="small muted" style="margin-bottom:4px">Board</p>
+            <div class="cards">
+              <div class="card d" role="img" aria-label="Ten of diamonds">10<svg><use href="#d"/></svg></div>
+              <div class="card s" role="img" aria-label="Seven of spades">7<svg><use href="#s"/></svg></div>
+              <div class="card c" role="img" aria-label="Three of clubs">3<svg><use href="#c"/></svg></div>
+              <div class="card h" role="img" aria-label="King of hearts">K<svg><use href="#h"/></svg></div>
+              <div class="card slot" role="img" aria-label="River not dealt"></div>
+            </div></div>
+        </div>
+        <div class="facts"><div>Pot<b>27</b></div><div>To call<b>0</b></div><div>Your stack<b>182</b></div><div>Players in hand<b>2</b></div></div>
+      </div>
+
+      <ul class="seats" aria-label="Seats in table order">
+        <li class="seat folded"><b>SB</b><span class="name">Hollis</span>200 · Folded</li>
+        <li class="seat folded"><b>BB</b><span class="name">Rook_7</span>198 · Folded</li>
+        <li class="seat acting"><b>UTG</b><span class="name">Tamsin</span>176 · Checked</li>
+        <li class="seat folded"><b>UTG+1</b><span class="name">Odalys</span>200 · Folded</li>
+        <li class="seat folded"><b>MP</b><span class="name">B. Achterberg-Lindqvist</span>200 · Folded</li>
+        <li class="seat folded"><b>HJ</b><span class="name">Pell</span>200 · Folded</li>
+        <li class="seat folded"><b>CO</b><span class="name">Jun</span>200 · Folded</li>
+        <li class="seat you"><b>BTN · You</b><span class="name">Marisol K.</span>182 · To act</li>
+      </ul>
+
+      <div class="panel">
+        <h3 style="margin-bottom:8px">Action so far</h3>
+        <ol class="actions">
+          <li><span class="street">Preflop</span><span>UTG raises to 6. Five players fold. You call 6. SB and BB fold.</span></li>
+          <li><span class="street">Flop</span><span>UTG bets 8. You call 8.</span></li>
+          <li><span class="street">Turn</span><span>UTG checks.</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="panel stack">
+        <fieldset>
+          <legend>Your move</legend>
+          <div class="moves">
+            <label class="move is-disabled"><input type="radio" name="m1" disabled>Check</label>
+            <label class="move is-locked"><input type="radio" name="m1" checked disabled>Bet</label>
+          </div>
+        </fieldset>
+        <p class="small muted">Answer locked. Answers can't be changed.</p>
+        <div class="fb ok" role="status">
+          <strong><svg aria-hidden="true"><use href="#ok"/></svg>Correct</strong>
+          <p>Accepted move: <b>Bet</b></p>
+        </div>
+        <div>
+          <h3 style="margin-bottom:4px">Why</h3>
+          <p>The flop call and turn check cap UTG's range at medium pairs and weak tens. You have the nut flush draw plus a gutshot to Broadway. Betting wins the pot now often enough, and when you're called you still have 12 outs.</p>
+        </div>
+        <div class="prob">
+          <span class="big">39.4%</span>
+          <span class="small muted">Win or tie at showdown vs 1 player</span>
+        </div>
+        <div class="row"><a class="btn btn-primary" href="#">Next hand</a><a class="btn btn-secondary" href="#">Review past answers</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Design system reference -->
+<div class="wrap">
+  <section class="doc">
+    <h2>Logo</h2>
+    <div class="row" style="align-items:flex-end;gap:24px">
+      <svg width="160" height="160" role="img" aria-label="stackademic logo, full size"><use href="#logo"/></svg>
+      <svg width="48" height="48" aria-hidden="true"><use href="#logo"/></svg>
+      <svg width="16" height="16" aria-hidden="true"><use href="#logo"/></svg>
+      <p class="small muted">160 · 48 · 16 px</p>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Palette</h2>
+    <div class="row">
+      <div class="sw"><i style="background:#17202E"></i><b>Ink</b> #17202E<br>Text, primary, spades</div>
+      <div class="sw"><i style="background:#4A5568"></i><b>Slate</b> #4A5568<br>Secondary text</div>
+      <div class="sw"><i style="background:#FFD84D"></i><b>Highlighter</b> #FFD84D<br>Your choices</div>
+      <div class="sw"><i style="background:#EEF1F4"></i><b>Paper</b> #EEF1F4<br>Page</div>
+      <div class="sw"><i style="background:#FFFFFF"></i><b>Surface</b> #FFFFFF<br>Panels</div>
+      <div class="sw"><i style="background:#6B7789"></i><b>Outline</b> #6B7789<br>Borders</div>
+      <div class="sw"><i style="background:#B42318"></i><b>Hearts / Error</b> #B42318</div>
+      <div class="sw"><i style="background:#1F4FB8"></i><b>Diamonds / Focus</b> #1F4FB8</div>
+      <div class="sw"><i style="background:#1E6B3A"></i><b>Clubs</b> #1E6B3A</div>
+      <div class="sw"><i style="background:#146C43"></i><b>Correct</b> #146C43</div>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Type scale</h2>
+    <div class="typerow"><span class="small muted">stat 40/800</span><span style="font-size:40px;font-weight:800;line-height:1">39.4%</span></div>
+    <div class="typerow"><span class="small muted">headline-lg 32</span><span style="font-size:32px;font-weight:700">Pass the initial exam</span></div>
+    <div class="typerow"><span class="small muted">headline-md 24</span><span style="font-size:24px;font-weight:700">Bluffing on paired boards</span></div>
+    <div class="typerow"><span class="small muted">headline-sm 19</span><span style="font-size:19px;font-weight:700">Action so far</span></div>
+    <div class="typerow"><span class="small muted">body-lg 18</span><span style="font-size:18px">One opponent checks the turn on a board with two diamonds.</span></div>
+    <div class="typerow"><span class="small muted">body-md 16</span><span>A bluff works when the story you tell fits the board.</span></div>
+    <div class="typerow"><span class="small muted">label-md 15/700</span><span style="font-size:15px;font-weight:700">Lock in answer</span></div>
+    <div class="typerow"><span class="small muted">label-sm 13</span><span style="font-size:13px">Retake available Nov 11 at 9:40 AM</span></div>
+  </section>
+
+  <section class="doc stack">
+    <h2>Buttons</h2>
+    <div class="row">
+      <button class="btn btn-primary">Lock in answer</button>
+      <button class="btn btn-primary is-hover">Hover</button>
+      <button class="btn btn-primary is-focus">Focus</button>
+      <button class="btn btn-primary" disabled>Lock in answer</button>
+    </div>
+    <div class="row">
+      <button class="btn btn-secondary">Change tutor</button>
+      <button class="btn btn-secondary is-hover">Hover</button>
+      <button class="btn btn-secondary is-focus">Focus</button>
+      <button class="btn btn-danger">Delete my account</button>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Playing cards</h2>
+    <div class="cards">
+      <div class="card" role="img" aria-label="Ace of spades">A<svg><use href="#s"/></svg></div>
+      <div class="card h" role="img" aria-label="King of hearts">K<svg><use href="#h"/></svg></div>
+      <div class="card d" role="img" aria-label="Queen of diamonds">Q<svg><use href="#d"/></svg></div>
+      <div class="card c" role="img" aria-label="Jack of clubs">J<svg><use href="#c"/></svg></div>
+      <div class="card back" role="img" aria-label="Face-down card"></div>
+      <div class="card slot" role="img" aria-label="Not dealt"></div>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Move choices</h2>
+    <div class="row">
+      <fieldset style="min-width:260px;flex:1">
+        <legend>Before answering</legend>
+        <div class="moves">
+          <label class="move"><input type="radio" name="m2">Fold</label>
+          <label class="move is-hover"><input type="radio" name="m2">Call (hover)</label>
+          <label class="move is-selected is-focus"><input type="radio" name="m2" checked>Raise (selected, focus)</label>
+        </div>
+        <p style="margin-top:16px"><button class="btn btn-primary">Lock in answer</button></p>
+      </fieldset>
+      <div class="stack" style="min-width:260px;flex:1">
+        <div class="fb bad" role="status"><strong><svg aria-hidden="true"><use href="#x"/></svg>Not the best move</strong><p>You chose <b>Call</b>. Accepted moves: <b>Raise</b>, <b>Fold</b></p></div>
+        <div class="locked"><b>Win probability</b><br>Shown after you lock in an answer.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Inputs</h2>
+    <div class="row">
+      <div class="field"><label class="lbl" for="e1">Email address</label><input class="input" id="e1" value="marisol@example.com"><p class="help">We send a confirmation link here.</p></div>
+      <div class="field"><label class="lbl" for="e2">Raise to</label><input class="input is-error" id="e2" value="900" aria-describedby="e2e" aria-invalid="true"><p class="errtext" id="e2e"><svg aria-hidden="true"><use href="#x"/></svg>Raise must be between 12 and 182.</p></div>
+      <div class="field"><label class="lbl" for="e3">Display name</label><input class="input is-focus" id="e3" value="Marisol K."></div>
+    </div>
+  </section>
+
+  <section class="doc stack">
+    <h2>Status and locks</h2>
+    <div class="row"><span class="badge">Smart student</span><span class="badge">Expert player</span><span class="badge">Admin</span></div>
+    <div class="locked">Tutors unlock when you pass the initial exam (16 of 20 correct). You scored 14. Retake available Nov 11 at 9:40 AM.</div>
+    <div class="fb bad" role="alert"><strong><svg aria-hidden="true"><use href="#x"/></svg>Sign-in didn't complete</strong><p>Try again, or use another passkey.</p></div>
+    <div class="fb ok" role="status"><strong><svg aria-hidden="true"><use href="#ok"/></svg>Check your email</strong><p>If that address has an account, a link is on its way. It works once, for 30 minutes.</p></div>
+  </section>
+
+  <section class="doc">
+    <h2>Tutoring chat</h2>
+    <div class="chat" aria-label="Chat with Dana R.">
+      <div class="msg"><div class="meta">Dana R. · 7:02 PM</div>Your turn bet with the nut draw was right. Now what's your plan if UTG check-raises?</div>
+      <div class="msg mine"><div class="meta">You · 7:03 PM</div>Call and see the river? I'd only have 12 outs.</div>
+      <div class="msg"><div class="meta">Dana R. · 7:03 PM</div>&lt;b&gt;Shove&lt;/b&gt; https://example.com/range-chart — user text is shown exactly as typed, never as markup or links.</div>
+      <p class="sys">Live game ended. Dana R. left.</p>
+      <div class="field" style="max-width:none"><label class="lbl" for="c1">Message</label><input class="input" id="c1" style="max-width:none"><p class="help">1,962 of 2,000 characters left</p></div>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Confirming a destructive action</h2>
+    <div class="scrim">
+      <div class="dialog" role="dialog" aria-labelledby="d1">
+        <h3 id="d1">Delete your account?</h3>
+        <p style="margin-top:8px">This can't be undone. We remove:</p>
+        <ul><li>Your email and display name</li><li>Your passkeys</li><li>Your quiz answers and exam attempts</li><li>Your chat messages</li></ul>
+        <label class="lbl" for="dn">Type your display name to confirm</label>
+        <input class="input" id="dn" style="max-width:none" placeholder="Marisol K.">
+        <div class="row" style="margin-top:16px"><button class="btn btn-secondary">Keep my account</button><button class="btn btn-danger" disabled>Delete my account</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc">
+    <h2>Admin context</h2>
+    <div class="adminbar">Admin — changes affect all users</div>
+  </section>
+</div>
+</main>
+</body>
+</html>
