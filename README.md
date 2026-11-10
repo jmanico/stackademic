@@ -1,4 +1,4 @@
-<img src="logo.png" alt="stackademic logo" width="64" height="64">
+<picture><source media="(prefers-color-scheme: dark)" srcset="logo-dark.png"><img src="logo.png" alt="stackademic logo" width="64" height="64"></picture>
 
 # stackademic
 

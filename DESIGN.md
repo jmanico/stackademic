@@ -203,7 +203,7 @@ The design is flat. Hierarchy comes from tone (white surface on paper) and 1px o
 
 ## Shapes
 
-Radius follows the object. Playing cards are 6px, like a real card. Buttons, inputs and move choices are 3px. Panels have square corners. Badges are pill-shaped. Suit symbols are drawn shapes, not emoji.
+Radius follows the object. Playing cards are 6px, like a real card. Buttons, inputs and move choices are 3px. Panels have square corners. Badges are pill-shaped. Suit symbols are drawn shapes, not emoji. The logo has a dark-background variant (`logo-dark.svg`): paper-colored chips with ink dots under a lighter blue diamond (#6E98F5). It is used only where the page around it is dark, such as GitHub in dark mode.
 
 ## Components
 
