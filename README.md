@@ -1,4 +1,4 @@
-<img src="logo.svg" alt="" width="64" height="64">
+<img src="https://raw.githubusercontent.com/jmanico/stackademic/main/logo.svg?v=3" alt="stackademic logo" width="64" height="64">
 
 # stackademic
 
