@@ -47,6 +47,10 @@ Requirement IDs (`FR-`, `NFR-`, `OQ-`) are permanent. They are never renumbered 
 - **FR-2.7** In a simulation, the system MUST let the user choose a bet size when they bet or raise, and MUST reject a size that the rules of no-limit Texas Hold'em or the user's chip stack do not allow. *(assumed)*
 - **FR-2.8** When a simulation hand ends, the system MUST show the user who won, the amount of play chips won, and the private cards of every player who reached the showdown. *(assumed)*
 - **FR-2.9** The system MUST use play chips that have no monetary value in every simulation and live game. *(assumed)*
+- **FR-2.10** A computer-controlled player MUST make only moves and bet sizes that are legal at that point in the hand. *(assumed)*
+- **FR-2.11** A computer-controlled player MUST choose its move from only what a human player in its seat could know: its own private cards, the shared cards dealt so far, the chip stacks, the pot size, and the moves made so far. It MUST NOT use the user's or any other player's private cards, or cards not yet dealt. *(assumed)*
+- **FR-2.12** A computer-controlled player MUST choose its move by a fixed set of rules that weighs the strength of its hand against the cost of staying in the hand, with some random variation so that it does not always make the same move in the same situation. *(assumed)*
+- **FR-2.13** The system MUST NOT offer a choice of difficulty or playing style for computer-controlled players. *(assumed)*
 
 ### 3. Win probability
 
@@ -129,7 +133,7 @@ Requirement IDs (`FR-`, `NFR-`, `OQ-`) are permanent. They are never renumbered 
 - **NFR-1.3** The system MUST meet WCAG 2.2 level AA. *(assumed)*
 - **NFR-2.1** The system MUST show a quiz hand within 2 seconds of the user asking for one. *(assumed)*
 - **NFR-2.2** The system MUST show a win probability within 2 seconds of the point where FR-3.4 or FR-3.5 calls for it. *(assumed)*
-- **NFR-2.3** A displayed win probability MUST be within 1 percentage point of the true value. *(assumed)*
+- **NFR-2.3** A displayed win probability MUST be within 1 percentage point of the true value in at least 999 of every 1,000 calculations. *(assumed)*
 - **NFR-2.4** The system MUST deliver a chat message or a live-game move to the other participant within 2 seconds. *(assumed)*
 
 ## Open Questions
